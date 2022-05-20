@@ -6,63 +6,65 @@ function TrendList() {
   return (
     <section>
       <div className="container py-10">
-        <div className="lg:grid lg:grid-cols-[auto,240px] gap-8">
-          <aside className="mb-10 pb-5 border-b border-stone-200 order-1">
-            <p className="flex items-center mb-6 font-medium text-sm">
-              DISCOVER MORE OF WHAT MATTERS TO YOU
-            </p>
-            <div className="flex flex-wrap">
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Self
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Relationships
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Data Science
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Programming
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Self
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Relationships
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Data Science
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Programming
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
-                  Health
-                </a>
-              </Link>
+        <div className="lg:grid lg:grid-cols-[auto,240px] xl:grid-cols-[auto,40%] gap-8">
+          <aside className="mb-10 pb-5 order-1">
+            <div className=" border-b border-stone-200">
+              <p className="flex items-center mb-6 font-medium text-sm">
+                DISCOVER MORE OF WHAT MATTERS TO YOU
+              </p>
+              <div className="flex flex-wrap pb-5">
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Self
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Relationships
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Data Science
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Programming
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Self
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Relationships
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Data Science
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Programming
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="mr-2 mb-3 px-4 py-2 text-xs text-stone-500 border border-stone-200 rounded">
+                    Health
+                  </a>
+                </Link>
+              </div>
             </div>
           </aside>
 
           <div className="list mt-3">
             <div className="flex items-center mb-12">
-              <div>
+              <div className="flex-1">
                 <div className="mb-2 font-medium text-[13px]">
                   Desiree Peralta
                   <span className="mx-[2px] text-stone-500">in</span>Better
@@ -91,7 +93,7 @@ function TrendList() {
             </div>
 
             <div className="flex items-center">
-              <div>
+              <div className="flex-1">
                 <div className="mb-2 font-medium text-[13px]">
                   Desiree Peralta
                   <span className="mx-[2px] text-stone-500">in</span>

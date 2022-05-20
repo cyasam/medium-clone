@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import { ClockLoader } from 'react-spinners';
-import SessionLayout from './MediumLayout';
+import MediumLayout from './MediumLayout';
 import HomeLayout from './HomeLayout';
 
 type Props = {
@@ -20,7 +20,7 @@ function Layout({ children }: Props) {
     );
 
   if (status === 'authenticated') {
-    return <SessionLayout>{children}</SessionLayout>;
+    return <MediumLayout>{children}</MediumLayout>;
   }
 
   return <HomeLayout>{children}</HomeLayout>;

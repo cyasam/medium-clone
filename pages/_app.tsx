@@ -12,12 +12,13 @@ type Props = AppProps & {
 };
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: Props) {
-  const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
+  const getLayout =
+    Component.getLayout || ((page: React.ReactNode) => <Layout>{page}</Layout>);
 
   return (
     <SessionProvider session={session}>
       <ModalProvider>
-        <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
+        {getLayout(<Component {...pageProps} />)}
         <Modal>
           <SignIn />
         </Modal>

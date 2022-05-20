@@ -41,7 +41,6 @@ function DefaultHome() {
       </section>
 
       <TrendGrid />
-
       <TrendList />
     </>
   );

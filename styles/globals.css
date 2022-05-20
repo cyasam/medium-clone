@@ -6,4 +6,10 @@
   .wrapper {
     @apply grid grid-cols-[max-content,auto] mx-auto lg:max-w-[1500px];
   }
+
+  .main-container {
+    @apply container lg:max-w-[700px];
+  }
 }
+
+@import 'MediumEditor.css';
