@@ -17,8 +17,6 @@ function Header2({ newPostData, createPost }: Props) {
     name: null,
   };
 
-  console.log(session);
-
   return (
     <header className="h-[65px] w-full">
       <div className="container max-w-[1072px] flex items-center h-full">
