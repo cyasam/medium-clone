@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -137,6 +138,13 @@ const MediumEditor: React.FC<Props> = ({
   );
 
   // Init
+  useLayoutEffect(() => {
+    setTitle(defaultTitle);
+
+    setEditorState(
+      EditorState.createWithContent(stateFromHTML(defaultBody ?? ''))
+    );
+  }, [defaultTitle, defaultBody]);
 
   useEffect(() => {
     if (editing && changed) {
@@ -156,7 +164,6 @@ const MediumEditor: React.FC<Props> = ({
       <div
         contentEditable="true"
         className="w-full p-4 text-[2rem] font-bold outline-none placeholder:text-stone-400"
-        placeholder="Title"
         onInput={onTitleChange}
         onPaste={onTitlePaste}
         dangerouslySetInnerHTML={{ __html: title ?? '' }}

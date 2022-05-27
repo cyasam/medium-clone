@@ -28,15 +28,21 @@ export const createAuthorPostsFetchUrl = (
 ) => {
   const params = new URLSearchParams();
   params.append('order', 'desc');
-  params.append('postStatus', postStatus ?? 'published');
 
-  const url = `/${username}/posts?${params.toString()}`;
+  const url = `/${username}/${
+    postStatus === 'draft' ? 'drafts' : 'posts'
+  }?${params.toString()}`;
 
   return url;
 };
 
-export const createAuthorPostFetchUrlByID = (uuid: unknown) => {
-  const url = `/posts/${uuid}`;
+export const createAuthorPostFetchUrlByID = (
+  uuid: unknown,
+  username: string | undefined,
+  postStatus?: string | undefined
+) => {
+  const url = `/${username}/${uuid}`;
+
   return url;
 };
 

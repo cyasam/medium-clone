@@ -7,7 +7,6 @@ import { useSession } from 'next-auth/react';
 
 function MediumHome() {
   const { data: session } = useSession();
-  console.log(session);
   const username = session?.user?.username;
   const postFetchUrl = createPostFetchUrl(username);
 

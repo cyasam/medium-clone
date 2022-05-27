@@ -13,6 +13,7 @@ type Post = {
   body: string;
   title_changes: string | null;
   body_changes: string | null;
+  status: 'draft' | 'published';
 };
 
 function EditPost() {
@@ -20,12 +21,18 @@ function EditPost() {
     query: { uuid },
   } = useRouter();
 
-  const postFetchUrl = createAuthorPostFetchUrlByID(uuid);
+  const { data: session } = useSession();
+  const username = session?.user?.username;
+  const postFetchUrl = createAuthorPostFetchUrlByID(uuid, username);
+
   const { data: post } = useSWR(postFetchUrl, fetcher);
 
-  const { title, body, title_changes, body_changes }: Post = post ?? {
+  const { title, body, title_changes, body_changes, status }: Post = post ?? {
     title: '',
     body: '',
+    title_changes: null,
+    body_changes: null,
+    status: 'published',
   };
 
   return (
@@ -37,7 +44,7 @@ function EditPost() {
         <MediumEditor
           title={title_changes ?? title}
           body={body_changes ?? body}
-          postStatus={post?.status}
+          postStatus={status}
         />
       )}
     </ProtectedPages>

@@ -12,13 +12,13 @@ type Props = {
 };
 
 export type NewPost = {
-  title: string | null | undefined;
-  body: string;
+  title: string | undefined;
+  body: string | undefined;
 };
 
 export type DraftPost = {
-  title_changes: string | null | undefined;
-  body_changes: string;
+  title_changes: string | undefined;
+  body_changes: string | undefined;
 };
 
 export type PostStatus = 'draft' | 'published';
@@ -42,7 +42,7 @@ function NewPostLayout({ children }: Props) {
     const toastId = toast.loading('Loading...');
 
     try {
-      const { data: post } = await Api.post('/posts', {
+      const { data: post } = await Api.post(`/${username}/drafts`, {
         ...newPostData,
         username,
         status: 'draft',
@@ -67,7 +67,7 @@ function NewPostLayout({ children }: Props) {
     const toastId = toast.loading('Loading...');
 
     try {
-      const { data: post } = await Api.put(`/posts/${uuid}`, {
+      const { data: post } = await Api.put(`/${username}/${uuid}`, {
         ...newPostData,
         status: 'draft',
       });
@@ -90,7 +90,7 @@ function NewPostLayout({ children }: Props) {
     const toastId = toast.loading('Loading...');
 
     try {
-      const { data: post } = await Api.post('/posts', {
+      const { data: post } = await Api.put(`/${username}/posts`, {
         ...newPostData,
         username,
         status: 'published',
@@ -125,7 +125,7 @@ function NewPostLayout({ children }: Props) {
     const text = isPublishedDraft ? 'Draft' : 'Post';
 
     try {
-      const { data: post } = await Api.put(`/posts/${uuid}`, {
+      const { data: post } = await Api.put(`/${username}/${uuid}`, {
         ...newPostData,
         status: 'published',
       });

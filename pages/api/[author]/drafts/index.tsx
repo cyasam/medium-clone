@@ -1,13 +1,16 @@
 import { PrismaClient } from '@prisma/client';
-import { errorHandler } from './../../../utils/errors';
-import { serializeData } from '../../../utils';
+import { serializeData } from '../../../../utils';
+import { errorHandler } from '../../../../utils/errors';
+import { authMiddleware } from '../../../../utils/middlewares';
 
 const prisma = new PrismaClient();
 
 export default async function postHandler(req: any, res: any) {
   try {
+    await authMiddleware(req, res);
+
     const {
-      query: { order, excludeUser },
+      query: { order, author },
       method,
     } = req;
 
@@ -15,11 +18,9 @@ export default async function postHandler(req: any, res: any) {
       case 'GET':
         const posts = await prisma.post.findMany({
           where: {
-            status: 'published',
-            NOT: {
-              user: {
-                username: excludeUser,
-              },
+            status: 'draft',
+            user: {
+              username: author,
             },
           },
           orderBy: {
