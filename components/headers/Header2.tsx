@@ -5,11 +5,11 @@ import { useSession } from 'next-auth/react';
 import LogoMini from '../../assets/img/logo-mini.svg';
 import UserProfileArea from '../UserProfileArea';
 
-import { NewPost } from '../layouts/NewPostLayout';
+import { PostStatus } from '../layouts/NewPostLayout';
 
 type Props = {
   changed: boolean;
-  publishClick: () => void;
+  publishClick: (postStatus: PostStatus) => void;
 };
 
 function Header2({ changed, publishClick }: Props) {
@@ -41,7 +41,7 @@ function Header2({ changed, publishClick }: Props) {
             <button
               type="button"
               disabled={!changed}
-              onClick={publishClick}
+              onClick={() => publishClick('published')}
               className="mr-6 px-3 py-1 h-6 text-xs rounded-full bg-green-700 hover:bg-green-800 text-white disabled:opacity-50"
             >
               Publish

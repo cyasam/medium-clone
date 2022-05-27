@@ -143,9 +143,9 @@ const MediumEditor: React.FC<Props> = ({
       const data = {
         title: title ?? '',
         body: getEditorContent().toString(),
-        postStatus: postStatus ?? 'draft',
       };
-      onChanged(data, editing);
+
+      onChanged(data, editing, postStatus ?? 'draft');
 
       setEditing(false);
     }

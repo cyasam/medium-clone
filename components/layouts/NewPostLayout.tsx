@@ -14,11 +14,17 @@ type Props = {
 export type NewPost = {
   title: string | null | undefined;
   body: string;
-  postStatus: 'draft' | 'published';
-} | null;
+};
+
+export type DraftPost = {
+  title_changes: string | null | undefined;
+  body_changes: string;
+};
+
+export type PostStatus = 'draft' | 'published';
 
 export const NewPostContext = React.createContext({
-  onChanged: (data: NewPost, changed: boolean) => {},
+  onChanged: (data: NewPost, changed: boolean, postStatus: PostStatus) => {},
 });
 
 function NewPostLayout({ children }: Props) {
@@ -29,7 +35,7 @@ function NewPostLayout({ children }: Props) {
     username: null,
   };
 
-  const [postData, setPostData] = useState<NewPost>(null);
+  const [postData, setPostData] = useState<NewPost | null>(null);
   const [changed, setChanged] = useState<boolean>(false);
 
   const createDraft = async (newPostData: NewPost) => {
@@ -105,7 +111,10 @@ function NewPostLayout({ children }: Props) {
     }
   };
 
-  const updatePost = async (uuid: unknown, newPostData: NewPost) => {
+  const updatePost = async (
+    uuid: unknown,
+    newPostData: NewPost | DraftPost
+  ) => {
     if (!newPostData) return;
 
     const toastId = toast.loading('Loading...');
@@ -137,14 +146,17 @@ function NewPostLayout({ children }: Props) {
     }
   };
 
-  const onChanged = (postData: NewPost, changed: boolean) => {
-    if (!changed) return false;
+  const onChanged = (
+    postData: NewPost,
+    changed: boolean,
+    postStatus: PostStatus
+  ) => {
+    if (!changed || !postData) return false;
 
-    const { postStatus, ...data } = postData;
     const { uuid } = router.query;
 
     if (postStatus === 'draft') {
-      uuid ? updateDraft(uuid, data) : createDraft(data);
+      uuid ? updateDraft(uuid, postData) : createDraft(postData);
     } else if (postStatus === 'published') {
       const newPostData = {
         title_changes: postData?.title,
@@ -157,12 +169,13 @@ function NewPostLayout({ children }: Props) {
     setChanged(changed);
   };
 
-  const publishClick = () => {
-    const { postStatus, ...data } = postData;
+  const publishClick = (postStatus: PostStatus) => {
+    if (!postData) return false;
+
     const { uuid } = router.query;
 
     if (postStatus === 'published') {
-      updatePost(uuid, data);
+      updatePost(uuid, postData);
     } else if (postStatus === 'draft') {
       createPost(postData);
     }
