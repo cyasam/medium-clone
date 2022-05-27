@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import { ClockLoader } from 'react-spinners';
-import MediumLayout from './MediumLayout';
-import HomeLayout from './HomeLayout';
+
+import MediumHeader from '../headers/MediumHeader';
 
 type Props = {
   children: React.ReactNode;
@@ -19,11 +19,12 @@ function Layout({ children }: Props) {
       </div>
     );
 
-  if (status === 'authenticated') {
-    return <MediumLayout>{children}</MediumLayout>;
-  }
-
-  return <HomeLayout>{children}</HomeLayout>;
+  return (
+    <div className="wrapper">
+      <MediumHeader />
+      <main className="py-10">{children}</main>
+    </div>
+  );
 }
 
 export default Layout;

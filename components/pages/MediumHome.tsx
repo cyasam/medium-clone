@@ -2,12 +2,16 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR from 'swr';
-import { Api } from '../../utils';
-
-const fetcher = (url: string) => Api.get(url).then((res) => res.data);
+import { createPostFetchUrl, fetcher } from '../../utils';
+import { useSession } from 'next-auth/react';
 
 function MediumHome() {
-  const { data: posts } = useSWR('/posts?order=desc', fetcher);
+  const { data: session } = useSession();
+  console.log(session);
+  const username = session?.user?.username;
+  const postFetchUrl = createPostFetchUrl(username);
+
+  const { data: posts } = useSWR(postFetchUrl, fetcher);
 
   return (
     <section>
@@ -20,11 +24,13 @@ function MediumHome() {
             >
               <div className="flex-1">
                 <div className="mb-2 font-medium text-[13px]">
-                  {post.users.name}
-                  <span className="mx-[2px] text-stone-500">in</span>Better
-                  Humans
+                  {post.user.name}
                 </div>
-                <h4 className="text-xl font-bold">{post.title}</h4>
+                <h4 className="text-xl font-bold">
+                  <Link href={`/@${post.user.username}/${post.uuid}`}>
+                    <a>{post.title}</a>
+                  </Link>
+                </h4>
                 <p className="mt-1 text-stone-500 text-base line-clamp-2">
                   A lessons I&apos;ve learned from recovering my own footing in
                   life

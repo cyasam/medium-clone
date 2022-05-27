@@ -1,11 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
-import NextAuth from 'next-auth';
+import NextAuth, { User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/avatars-initials-sprites';
 
 import { PrismaClient } from '@prisma/client';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { createClient } from '@supabase/supabase-js';
+
+const prisma = new PrismaClient();
 
 const supabase = createClient(
   <string>process.env.SUPABASE_URL,
@@ -56,56 +59,57 @@ const uploadAvatarImage = async (user: any) => {
     if (error2) return null;
 
     return publicURL;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
+    return null;
   }
 };
 
-const prisma = new PrismaClient();
-
 export default NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: <string>process.env.GOOGLE_CLIENT_ID,
       clientSecret: <string>process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  callbacks: {
-    async signIn({ user }) {
-      if (!user?.email) return false;
+  events: {
+    async createUser({ user }: { user: User }) {
+      try {
+        const avatarUrl = await uploadAvatarImage(user);
+        const usernameMatchArray = user.email?.match(/^.*(?=@)/g);
+        const username = usernameMatchArray ? usernameMatchArray[0] : uuidv4();
 
-      const existingUser = await prisma.users.findUnique({
-        where: {
-          email: user?.email,
-        },
-      });
-
-      if (existingUser) return true;
-
-      let avatarUrl = await uploadAvatarImage(user);
-
-      const newUser = await prisma.users.create({
-        data: { name: user.name, email: user?.email, avatar: avatarUrl },
-      });
-
-      if (!newUser) return false;
-
-      return true;
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            username,
+            image: avatarUrl,
+          },
+        });
+      } catch (err) {
+        console.log(err);
+      }
     },
+  },
+  callbacks: {
     async session({ session }) {
-      const existingUser = await prisma.users.findUnique({
+      const existingUser = await prisma.user.findUnique({
         where: {
           email: session?.user?.email ?? undefined,
         },
       });
 
-      if (!existingUser) return session;
-
-      if (session && session.user) {
-        session.user.image = existingUser.avatar;
-      }
-
-      return session;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          username: existingUser?.username,
+          image: existingUser?.image,
+        },
+      };
     },
   },
 });

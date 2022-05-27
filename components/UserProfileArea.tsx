@@ -7,8 +7,10 @@ type Props = {
 };
 
 function UserProfileArea({ menuClassName }: Props) {
+  const { data: session, status } = useSession();
   const [openMenu, setOpenMenu] = useState(false);
-  const { data: session } = useSession();
+
+  if (status === 'unauthenticated') return null;
 
   const { email, name } = session?.user ?? {
     email: null,

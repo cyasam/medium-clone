@@ -1,17 +1,19 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import LogoMini from '../../assets/img/logo-mini.svg';
 import UserProfileArea from '../UserProfileArea';
 
+import { NewPost } from '../layouts/NewPostLayout';
+
 type Props = {
-  newPostData: any;
-  createPost: MouseEventHandler;
+  changed: boolean;
+  publishClick: () => void;
 };
 
-function Header2({ newPostData, createPost }: Props) {
-  const { data: session, status } = useSession();
+function Header2({ changed, publishClick }: Props) {
+  const { data: session } = useSession();
 
   const { name } = session?.user ?? {
     name: null,
@@ -32,25 +34,20 @@ function Header2({ newPostData, createPost }: Props) {
                 />
               </a>
             </Link>
-            {status === 'authenticated' && (
-              <span className="ml-4">Draft in {name}</span>
-            )}
+            <span className="ml-4">Draft in {name}</span>
           </div>
 
           <div className="flex items-center">
             <button
               type="button"
-              disabled={
-                newPostData?.title?.length === 0 ||
-                newPostData?.body?.length === 0
-              }
-              onClick={createPost}
+              disabled={!changed}
+              onClick={publishClick}
               className="mr-6 px-3 py-1 h-6 text-xs rounded-full bg-green-700 hover:bg-green-800 text-white disabled:opacity-50"
             >
               Publish
             </button>
 
-            <UserProfileArea />
+            <UserProfileArea menuClassName="right-0 lg:-right-1/2 lg:transform-" />
           </div>
         </div>
       </div>

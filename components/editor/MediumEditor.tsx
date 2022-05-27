@@ -1,15 +1,17 @@
 import React, {
   BaseSyntheticEvent,
-  ReactElement,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import { EditorState } from 'draft-js';
-import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
+import Editor from '@draft-js-plugins/editor';
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
 import { stateToHTML } from 'draft-js-export-html';
+import { stateFromHTML } from 'draft-js-import-html';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
 
 import {
@@ -22,6 +24,7 @@ import {
 } from '@draft-js-plugins/buttons';
 import dynamic from 'next/dynamic';
 import { NewPostContext } from '../layouts/NewPostLayout';
+import { useDebounce } from 'usehooks-ts';
 
 interface ClipboardEvent<T = Element> extends BaseSyntheticEvent {
   clipboardData: DataTransfer;
@@ -43,7 +46,17 @@ const HeadlineTwoButton = createBlockStyleButton({
   ),
 });
 
-const MediumEditor = (): ReactElement => {
+type Props = {
+  title?: string;
+  body?: string;
+  postStatus?: 'draft' | 'published';
+};
+
+const MediumEditor: React.FC<Props> = ({
+  title: defaultTitle,
+  body: defaultBody,
+  postStatus,
+}) => {
   const [plugins, InlineToolbar] = useMemo(() => {
     const inlineToolbarPlugin = createInlineToolbarPlugin({
       theme: { buttonStyles, toolbarStyles },
@@ -52,46 +65,61 @@ const MediumEditor = (): ReactElement => {
     return [[inlineToolbarPlugin], inlineToolbarPlugin.InlineToolbar];
   }, []);
 
-  const [title, setTitle] = useState('');
-  const [editorState, setEditorState] = useState(() =>
-    createEditorStateWithText('')
-  );
-
-  const { setNewPost } = useContext(NewPostContext);
-
   const editor = useRef<Editor | null>(null);
 
-  const onChange = (value: EditorState): void => {
-    setEditorState(value);
+  const [title, setTitle] = useState(defaultTitle);
+  const [editorState, setEditorState] = useState(
+    () =>
+      EditorState.createWithContent(stateFromHTML(defaultBody ?? '')) ??
+      EditorState.createEmpty()
+  );
 
-    setNewPost({
-      title,
-      body: getEditorContent(value).toString(),
-    });
+  const [editing, setEditing] = useState(false);
+  const changed = useDebounce(editing, 3000);
+
+  const { onChanged } = useContext(NewPostContext);
+
+  // Methods
+  const detectStateChanged = (value: EditorState) => {
+    const oldState = editorState.getCurrentContent();
+    const newState = value.getCurrentContent();
+
+    return oldState !== newState;
+  };
+
+  const onChange = (value: EditorState): void => {
+    if (!detectStateChanged(value)) return;
+
+    setEditorState(value);
+    setEditing(true);
   };
 
   const onTitleChange = (e: BaseSyntheticEvent) => {
     const title = e.target.innerHTML;
     setTitle(title);
-
-    setNewPost({
-      title,
-      body: getEditorContent().toString(),
-    });
+    setEditing(true);
   };
 
   const onTitlePaste = (e: ClipboardEvent) => {
     e.preventDefault();
 
-    navigator.clipboard.writeText(e.target.innerHTML);
-
     const copyText = e.clipboardData.getData('text/plain');
 
-    const selection = window.getSelection();
-    if (!selection?.rangeCount) return false;
+    const range = window.getSelection()?.getRangeAt(0);
+    if (!range) return;
 
-    selection.getRangeAt(0).insertNode(document.createTextNode(copyText));
-    selection.collapseToEnd();
+    range.deleteContents();
+
+    const textNode = document.createTextNode(copyText);
+    range.insertNode(textNode);
+    range.selectNodeContents(textNode);
+    range.collapse(false);
+
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    selection.removeAllRanges();
+    selection.addRange(range);
 
     onTitleChange(e);
   };
@@ -100,10 +128,28 @@ const MediumEditor = (): ReactElement => {
     editor.current?.focus();
   };
 
-  const getEditorContent = (value?: any) => {
-    const state = value ?? editorState;
-    return stateToHTML(state.getCurrentContent());
-  };
+  const getEditorContent = useCallback(
+    (value?: any) => {
+      const state = value ?? editorState;
+      return stateToHTML(state.getCurrentContent());
+    },
+    [editorState]
+  );
+
+  // Init
+
+  useEffect(() => {
+    if (editing && changed) {
+      const data = {
+        title: title ?? '',
+        body: getEditorContent().toString(),
+        postStatus: postStatus ?? 'draft',
+      };
+      onChanged(data, editing);
+
+      setEditing(false);
+    }
+  }, [onChanged, getEditorContent, title, editing, changed, postStatus]);
 
   return (
     <div className="medium-editor mt-10">
@@ -113,6 +159,7 @@ const MediumEditor = (): ReactElement => {
         placeholder="Title"
         onInput={onTitleChange}
         onPaste={onTitlePaste}
+        dangerouslySetInnerHTML={{ __html: title ?? '' }}
       />
 
       <div className="pl-4 border-b border-stone-200" />
@@ -145,6 +192,12 @@ const MediumEditor = (): ReactElement => {
       </div>
     </div>
   );
+};
+
+MediumEditor.defaultProps = {
+  title: '',
+  body: '',
+  postStatus: 'draft',
 };
 
 export default dynamic(() => Promise.resolve(MediumEditor), {

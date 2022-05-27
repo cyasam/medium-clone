@@ -86,7 +86,7 @@ function MediumHeader() {
             </Link>
           </li>
           <li>
-            <Link href="/">
+            <Link href="/me/stories/drafts">
               <a className="">
                 <svg
                   width="24"

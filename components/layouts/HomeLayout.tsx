@@ -1,11 +1,19 @@
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import DefaultHeader from '../headers/DefaultHeader';
+import Layout from './Layout';
 
 type Props = {
   children: React.ReactNode;
 };
 
 function HomeLayout({ children }: Props) {
+  const { status } = useSession();
+
+  if (status === 'loading') return null;
+
+  if (status === 'authenticated') return <Layout>{children}</Layout>;
+
   return (
     <>
       <DefaultHeader />
