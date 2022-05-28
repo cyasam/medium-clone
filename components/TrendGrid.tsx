@@ -29,7 +29,7 @@ function TrendGrid() {
                 </div>
                 <div>
                   <div className="mb-2 font-medium text-[13px]">
-                    {post?.users?.name}
+                    {post?.user?.name}
                   </div>
                   <h4 className="text-base font-bold">
                     <Link href={`/@${username}/${post.uuid}`}>
