@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { IoTrendingUpSharp } from 'react-icons/io5';
 import useSWR from 'swr';
 import { createPostFetchUrl, fetcher } from '../utils';
+import { Post } from '../types';
+
 
 function TrendGrid() {
   const postFetchUrl = createPostFetchUrl();
@@ -18,8 +20,9 @@ function TrendGrid() {
           TRENDING ON MEDIUM
         </p>
         <div className="grid grid-cols-2 gap-6">
-          {posts?.map((post: any, index: number) => {
-            const postNumber = index < 10 ? `0${index}` : index;
+          {!posts && <p>Loading...</p>}
+          {posts?.map((post: Post, index: number) => {
+            const postNumber = index < 10 ? `0${index + 1}` : index + 1;
             const { username } = post.user;
 
             return (

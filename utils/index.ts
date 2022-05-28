@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const Api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_APIURL,
+  baseURL: process.env.NEXTAUTH_URL,
 });
 
 export const serializeData = (data: unknown) => {
@@ -16,7 +16,7 @@ export const createPostFetchUrl = (username?: string | undefined) => {
   params.append('order', 'desc');
   username && params.append('excludeUser', username);
 
-  const url = `/posts?${params.toString()}`;
+  const url = `/api/posts?${params.toString()}`;
 
   return url;
 };
@@ -28,7 +28,7 @@ export const createAuthorPostsFetchUrl = (
   const params = new URLSearchParams();
   params.append('order', 'desc');
 
-  const url = `/${username}/${
+  const url = `/api/${username}/${
     postStatus === 'draft' ? 'drafts' : 'posts'
   }?${params.toString()}`;
 
@@ -39,7 +39,7 @@ export const createAuthorPostFetchUrlByID = (
   uuid: unknown,
   username: string
 ) => {
-  const url = `/${username}/${uuid}`;
+  const url = `/api/${username}/${uuid}`;
 
   return url;
 };

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { NewPostContext, PostStatus } from '../layouts/NewPostLayout';
+import { NewPostContext } from '../layouts/NewPostLayout';
 import EditorJS from '@editorjs/editorjs';
+import { PostStatus } from '../../types';
 
 type Props = {
   blocks?: EditorJS.OutputData;

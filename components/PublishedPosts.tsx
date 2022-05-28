@@ -14,7 +14,7 @@ function PublishedPosts() {
 
   return (
     <div className="list">
-      {posts?.map((post: any) => (
+      {posts?.map((post: Post) => (
         <div
           key={post.id}
           className="flex items-center pb-8 mb-8 border-b border-stone-300"

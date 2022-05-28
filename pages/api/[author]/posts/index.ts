@@ -1,13 +1,26 @@
 import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { serializeData } from '../../../../utils';
 import { errorHandler } from '../../../../utils/errors';
 import { authMiddleware } from '../../../../utils/middlewares';
 
 const prisma = new PrismaClient();
 
-export default async function postHandler(req: any, res: any) {
+interface ExtendedNextApiRequest extends NextApiRequest {
+  query: { order?: string; author: string };
+  body: {
+    title: string;
+    body: string;
+    status: string;
+  };
+}
+
+export default async function handler(
+  req: ExtendedNextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    await authMiddleware(req, res);
+    await authMiddleware(req);
 
     const {
       query: { order, author },

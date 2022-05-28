@@ -1,21 +1,14 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { getSession, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+
+import { Api, createAuthorPostFetchUrlByID } from '../../../utils';
+import { Post, PostStatus } from '../../../types';
 
 import MediumEditor from '../../../components/editor/MediumEditor';
-import NewPostLayout, {
-  PostStatus,
-} from '../../../components/layouts/NewPostLayout';
-import { Api, createAuthorPostFetchUrlByID, fetcher } from '../../../utils';
 import ProtectedPages from '../../../components/pages/ProtectedPages';
-
-type Post = {
-  body: string;
-  body_changes: string;
-  status: PostStatus;
-};
+import NewPostLayout from '../../../components/layouts/NewPostLayout';
 
 export async function getServerSideProps(context: any) {
   return {
@@ -39,7 +32,7 @@ function EditPost() {
   useEffect(() => {
     const init = async () => {
       const postFetchUrl = createAuthorPostFetchUrlByID(uuid, username);
-      const { data: post } = await Api.get(postFetchUrl);
+      const { data: post }: {data: Post} = await Api.get(postFetchUrl);
 
       const {
         body,
@@ -51,10 +44,14 @@ function EditPost() {
         status: 'draft',
       };
 
-      const blocks =
-        postStatus === 'published'
-          ? JSON.parse(body_changes ?? body)
-          : JSON.parse(body);
+      let blocks = null;
+
+       if( postStatus === 'published') {
+        let blocksString = body_changes ?? body
+        blocks = blocksString && JSON.parse(blocksString)
+       } else {
+        blocks = body && JSON.parse(body);
+       }
 
       setBlocks(blocks);
       setPostStatus(postStatus);

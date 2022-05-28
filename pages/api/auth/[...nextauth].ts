@@ -15,7 +15,7 @@ const supabase = createClient(
   <string>process.env.SUPABASE_PUBLICKEY
 );
 
-const uploadAvatarImage = async (user: any) => {
+const uploadAvatarImage = async (user: User) => {
   try {
     const { image, name } = user;
 
@@ -35,7 +35,7 @@ const uploadAvatarImage = async (user: any) => {
       }
     } else {
       avatarImage = createAvatar(style, {
-        seed: name,
+        seed: name ?? 'M',
       });
     }
 

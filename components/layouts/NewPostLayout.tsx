@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { ReactNode, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import NewPost from '../../pages/new-post';
+import { PostStatus } from '../../types';
 import { Api } from '../../utils';
 import Header2 from '../headers/Header2';
 
@@ -19,8 +20,6 @@ export type DraftPost = {
   title_changes: string | undefined;
   body_changes: string | undefined;
 };
-
-export type PostStatus = 'draft' | 'published';
 
 export const NewPostContext = React.createContext({
   onChanged: (data: NewPost, postStatus: PostStatus) => {},

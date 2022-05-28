@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 import { createAuthorPostsFetchUrl, fetcher } from '../utils';
 import Link from 'next/link';
+import { Post } from '../types';
 
 function DraftPosts() {
   const { data: session } = useSession();
@@ -13,7 +14,7 @@ function DraftPosts() {
 
   return (
     <div className="list">
-      {posts?.map((post: any) => (
+      {posts?.map((post: Post) => (
         <div
           key={post.id}
           className="flex items-center pb-8 mb-8 border-b border-stone-300"
