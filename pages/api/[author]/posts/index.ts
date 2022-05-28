@@ -10,8 +10,8 @@ export default async function postHandler(req: any, res: any) {
     await authMiddleware(req, res);
 
     const {
-      query: { order },
-      body: { title, body, username, status },
+      query: { order, author },
+      body: { title, body, status },
       method,
     } = req;
 
@@ -21,7 +21,7 @@ export default async function postHandler(req: any, res: any) {
           where: {
             status: 'published',
             user: {
-              username,
+              username: author,
             },
           },
           orderBy: {
@@ -42,12 +42,12 @@ export default async function postHandler(req: any, res: any) {
         res.status(200).json(serializeData(posts));
         break;
       case 'POST':
-        if (!username)
-          return res.status(401).json({ message: 'user_email not provided' });
+        if (!author)
+          return res.status(401).json({ message: 'author not provided' });
 
         const existingUser = await prisma.user.findUnique({
           where: {
-            username,
+            username: author,
           },
         });
 
