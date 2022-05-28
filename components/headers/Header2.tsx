@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import LogoMini from '../../assets/img/logo-mini.svg';
 import UserProfileArea from '../UserProfileArea';
+import { PostStatus } from '../../types';
 
-import { PostStatus } from '../layouts/NewPostLayout';
 
 type Props = {
   changed: boolean;

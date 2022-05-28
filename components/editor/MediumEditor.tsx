@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { NewPostContext } from '../layouts/NewPostLayout';
 import EditorJS from '@editorjs/editorjs';
 import { PostStatus } from '../../types';

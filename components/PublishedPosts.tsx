@@ -4,6 +4,7 @@ import Link from 'next/link';
 import useSWR from 'swr';
 import { createAuthorPostsFetchUrl, fetcher } from '../utils';
 import { useSession } from 'next-auth/react';
+import { Post } from '../types';
 
 function PublishedPosts() {
   const { data: session } = useSession();
