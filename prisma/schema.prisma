@@ -16,7 +16,7 @@ model Post {
   status        String    @default("draft") @db.VarChar
   modified_at   DateTime? @default(now()) @db.Timestamptz(6)
   title_changes String?   @db.VarChar
-  body_changes  String?   @default("")
+  body_changes  String?   
   uuid          String    @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

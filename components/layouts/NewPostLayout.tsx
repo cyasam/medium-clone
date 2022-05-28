@@ -5,7 +5,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import NewPost from '../../pages/new-post';
 import { Api } from '../../utils';
 import Header2 from '../headers/Header2';
-import ProtectedPages from '../pages/ProtectedPages';
 
 type Props = {
   children: ReactNode;
@@ -24,7 +23,7 @@ export type DraftPost = {
 export type PostStatus = 'draft' | 'published';
 
 export const NewPostContext = React.createContext({
-  onChanged: (data: NewPost, changed: boolean, postStatus: PostStatus) => {},
+  onChanged: (data: NewPost, postStatus: PostStatus) => {},
 });
 
 function NewPostLayout({ children }: Props) {
@@ -146,12 +145,8 @@ function NewPostLayout({ children }: Props) {
     }
   };
 
-  const onChanged = (
-    postData: NewPost,
-    changed: boolean,
-    postStatus: PostStatus
-  ) => {
-    if (!changed || !postData) return false;
+  const onChanged = (postData: NewPost, postStatus: PostStatus) => {
+    if (!postData) return false;
 
     const { uuid } = router.query;
 
@@ -166,7 +161,7 @@ function NewPostLayout({ children }: Props) {
     }
 
     setPostData(postData);
-    setChanged(changed);
+    setChanged(true);
   };
 
   const publishClick = (postStatus: PostStatus) => {
@@ -182,13 +177,11 @@ function NewPostLayout({ children }: Props) {
   };
 
   return (
-    <ProtectedPages>
-      <NewPostContext.Provider value={{ onChanged }}>
-        <Header2 changed={changed} publishClick={publishClick} />
-        <div className="container max-w-[740px]">{children}</div>
-        <Toaster />
-      </NewPostContext.Provider>
-    </ProtectedPages>
+    <NewPostContext.Provider value={{ onChanged }}>
+      <Header2 changed={changed} publishClick={publishClick} />
+      <div className="container max-w-[740px]">{children}</div>
+      <Toaster />
+    </NewPostContext.Provider>
   );
 }
 

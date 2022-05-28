@@ -21,7 +21,9 @@ function DraftPosts() {
           <div className="flex-1">
             <div className="mb-2 font-medium text-[13px]">{post.user.name}</div>
             <h4 className="text-xl font-bold">
-              <Link href={`/p/${post.uuid}/edit`}>{post.title}</Link>
+              <Link href={`/p/${post.uuid}/edit`}>
+                <a>{post.title ?? 'Untitled Post'}</a>
+              </Link>
             </h4>
             <p className="mt-1 text-stone-500 text-base line-clamp-2">
               A lessons I&apos;ve learned from recovering my own footing in life

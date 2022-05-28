@@ -1,20 +1,29 @@
-import React, { ReactNode } from 'react';
-import { useSession } from 'next-auth/react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import { getSession, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
 import MediumEditor from '../../../components/editor/MediumEditor';
-import NewPostLayout from '../../../components/layouts/NewPostLayout';
-import { createAuthorPostFetchUrlByID, fetcher } from '../../../utils';
+import NewPostLayout, {
+  PostStatus,
+} from '../../../components/layouts/NewPostLayout';
+import { Api, createAuthorPostFetchUrlByID, fetcher } from '../../../utils';
 import ProtectedPages from '../../../components/pages/ProtectedPages';
 
 type Post = {
-  title: string;
   body: string;
-  title_changes: string | null;
-  body_changes: string | null;
-  status: 'draft' | 'published';
+  body_changes: string;
+  status: PostStatus;
 };
+
+export async function getServerSideProps(context: any) {
+  return {
+    props: {
+      session: await getSession(context),
+    },
+  };
+}
 
 function EditPost() {
   const {
@@ -23,30 +32,43 @@ function EditPost() {
 
   const { data: session } = useSession();
   const username = session?.user?.username;
-  const postFetchUrl = createAuthorPostFetchUrlByID(uuid, username);
 
-  const { data: post } = useSWR(postFetchUrl, fetcher);
+  const [blocks, setBlocks] = useState();
+  const [postStatus, setPostStatus] = useState<PostStatus>('draft');
 
-  const { title, body, title_changes, body_changes, status }: Post = post ?? {
-    title: '',
-    body: '',
-    title_changes: null,
-    body_changes: null,
-    status: 'published',
-  };
+  useEffect(() => {
+    const init = async () => {
+      const postFetchUrl = createAuthorPostFetchUrlByID(uuid, username);
+      const { data: post } = await Api.get(postFetchUrl);
+
+      const {
+        body,
+        body_changes,
+        status: postStatus,
+      }: Post = post ?? {
+        body: null,
+        body_changes: null,
+        status: 'draft',
+      };
+
+      const blocks =
+        postStatus === 'published'
+          ? JSON.parse(body_changes ?? body)
+          : JSON.parse(body);
+
+      setBlocks(blocks);
+      setPostStatus(postStatus);
+    };
+
+    uuid && username && init();
+  }, [username, uuid]);
 
   return (
     <ProtectedPages>
       <Head>
         <title>Edit Post</title>
       </Head>
-      {post && (
-        <MediumEditor
-          title={title_changes ?? title}
-          body={body_changes ?? body}
-          postStatus={status}
-        />
-      )}
+      {blocks && <MediumEditor blocks={blocks} postStatus={postStatus} />}
     </ProtectedPages>
   );
 }

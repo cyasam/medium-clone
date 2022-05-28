@@ -37,8 +37,7 @@ export const createAuthorPostsFetchUrl = (
 
 export const createAuthorPostFetchUrlByID = (
   uuid: unknown,
-  username: string | undefined,
-  postStatus?: string | undefined
+  username: string
 ) => {
   const url = `/${username}/${uuid}`;
 
