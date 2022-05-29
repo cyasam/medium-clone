@@ -21,12 +21,12 @@ function DefaultHome() {
           />
         </div>
         <div className="container py-24">
-          <h2 className="mb-9 text-[70px] md:text-[85px] lg:text-[106px] leading-[1] font-medium font-serif">
+          <h1 className="mb-9 text-[70px] md:text-[85px] lg:text-[106px] leading-[1] font-medium font-serif">
             Stay curious.
-          </h2>
-          <h3 className="md:max-w-[50%] lg:max-w-[400px] text-[22px]">
+          </h1>
+          <h2 className="md:max-w-[50%] lg:max-w-[400px] text-[22px]">
             Discover stories, thinking, and expertise from writers on any topic.
-          </h3>
+          </h2>
 
           <button
             type="button"

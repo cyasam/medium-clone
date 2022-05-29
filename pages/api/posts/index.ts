@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { errorHandler } from './../../../utils/errors';
-import { serializeData } from '../../../utils';
-
+import { serializeData } from '../../../utils/api';
 
 export const getAllPosts = async (order?: string, excludeUser?: string) => {
   const prisma = new PrismaClient();
@@ -30,8 +29,8 @@ export const getAllPosts = async (order?: string, excludeUser?: string) => {
   });
   prisma.$disconnect();
 
-  return serializeData(posts)
-}
+  return serializeData(posts);
+};
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   query: { order?: string; excludeUser?: string };
@@ -49,7 +48,7 @@ export default async function handler(
 
     switch (method) {
       case 'GET':
-        const posts = await getAllPosts(order, excludeUser)
+        const posts = await getAllPosts(order, excludeUser);
 
         res.status(200).json(posts);
         break;

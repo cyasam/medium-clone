@@ -1,9 +1,27 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { serializeData } from '../../../utils';
+import { serializeData } from '../../../utils/api';
 import { errorHandler } from '../../../utils/errors';
 
-const prisma = new PrismaClient();
+export const getPostByID = async (uuid: string) => {
+  const prisma = new PrismaClient();
+  const post = await prisma.post.findUnique({
+    where: {
+      uuid,
+    },
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      created_at: true,
+      user: true,
+      uuid: true,
+    },
+  });
+  prisma.$disconnect();
+
+  return serializeData(post);
+};
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   query: { uuid: string };
@@ -21,22 +39,9 @@ export default async function handler(
 
     switch (method) {
       case 'GET':
-        const post = await prisma.post.findUnique({
-          where: {
-            uuid,
-          },
-          select: {
-            id: true,
-            title: true,
-            body: true,
-            created_at: true,
-            user: true,
-            uuid: true,
-          },
-        });
-        prisma.$disconnect();
+        const post = await getPostByID(uuid);
 
-        res.status(200).json(serializeData(post));
+        res.status(200).json(post);
         break;
 
       default:

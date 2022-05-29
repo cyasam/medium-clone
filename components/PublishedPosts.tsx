@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR from 'swr';
-import { createAuthorPostsFetchUrl, fetcher } from '../utils';
+import { createAuthorPostsFetchUrl, fetcher } from '../utils/api';
 import { useSession } from 'next-auth/react';
 import { Post } from '../types';
 

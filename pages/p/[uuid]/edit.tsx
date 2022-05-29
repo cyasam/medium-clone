@@ -3,7 +3,7 @@ import { getSession, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { Api, createAuthorPostFetchUrlByID } from '../../../utils';
+import { Api, createAuthorPostFetchUrlByID } from '../../../utils/api';
 import { Post, PostStatus } from '../../../types';
 
 import MediumEditor from '../../../components/editor/MediumEditor';
@@ -32,7 +32,7 @@ function EditPost() {
   useEffect(() => {
     const init = async () => {
       const postFetchUrl = createAuthorPostFetchUrlByID(uuid, username);
-      const { data: post }: {data: Post} = await Api.get(postFetchUrl);
+      const { data: post }: { data: Post } = await Api.get(postFetchUrl);
 
       const {
         body,
@@ -46,12 +46,12 @@ function EditPost() {
 
       let blocks = null;
 
-       if( postStatus === 'published') {
-        let blocksString = body_changes ?? body
-        blocks = blocksString && JSON.parse(blocksString)
-       } else {
+      if (postStatus === 'published') {
+        let blocksString = body_changes ?? body;
+        blocks = blocksString && JSON.parse(blocksString);
+      } else {
         blocks = body && JSON.parse(body);
-       }
+      }
 
       setBlocks(blocks);
       setPostStatus(postStatus);

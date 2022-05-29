@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useSWR from 'swr';
-import { createPostFetchUrl, fetcher } from '../../utils';
+import { createPostFetchUrl, fetcher } from '../../utils/api';
 import { useSession } from 'next-auth/react';
 
 function MediumHome() {

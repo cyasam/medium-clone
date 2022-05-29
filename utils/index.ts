@@ -1,47 +1,33 @@
-import axios from 'axios';
-
-export const Api = axios.create({
-  baseURL: process.env.NEXTAUTH_URL,
-});
-
-export const serializeData = (data: unknown) => {
-  const string = JSON.stringify(data, (key, value) =>
-    typeof value === 'bigint' ? value.toString() : value
-  );
-  return JSON.parse(string);
+type Options = {
+  year?: boolean;
+  month?: boolean;
+  day?: boolean;
 };
 
-export const createPostFetchUrl = (username?: string | undefined) => {
-  const params = new URLSearchParams();
-  params.append('order', 'desc');
-  username && params.append('excludeUser', username);
+export const formatPostDate = (date?: string, options?: Options) => {
+  let dateOptions: Intl.DateTimeFormatOptions | undefined = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
 
-  const url = `/api/posts?${params.toString()}`;
+  if (options) {
+    const { year, month, day } = options;
 
-  return url;
+    if (!year) {
+      dateOptions.year = undefined;
+    }
+
+    if (!month) {
+      dateOptions.month = undefined;
+    }
+
+    if (!day) {
+      dateOptions.day = undefined;
+    }
+  }
+
+  if (!date) return new Date().toLocaleDateString('en-US', dateOptions);
+
+  return new Date(date).toLocaleDateString('en-US', dateOptions);
 };
-
-export const createAuthorPostsFetchUrl = (
-  username: string | undefined,
-  postStatus?: string | undefined
-) => {
-  const params = new URLSearchParams();
-  params.append('order', 'desc');
-
-  const url = `/api/${username}/${
-    postStatus === 'draft' ? 'drafts' : 'posts'
-  }?${params.toString()}`;
-
-  return url;
-};
-
-export const createAuthorPostFetchUrlByID = (
-  uuid: unknown,
-  username: string
-) => {
-  const url = `/api/${username}/${uuid}`;
-
-  return url;
-};
-
-export const fetcher = (url: string) => Api.get(url).then((res) => res.data);

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { serializeData } from '../../../../utils';
+import { serializeData } from '../../../../utils/api';
 import { errorHandler } from '../../../../utils/errors';
 import { authMiddleware } from '../../../../utils/middlewares';
 

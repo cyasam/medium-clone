@@ -2,9 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { IoTrendingUpSharp } from 'react-icons/io5';
 import useSWR from 'swr';
-import { createPostFetchUrl, fetcher } from '../utils';
+import { createPostFetchUrl, fetcher } from '../utils/api';
 import { Post } from '../types';
-
 
 function TrendGrid() {
   const postFetchUrl = createPostFetchUrl();

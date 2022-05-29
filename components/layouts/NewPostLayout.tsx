@@ -4,7 +4,7 @@ import React, { ReactNode, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import NewPost from '../../pages/new-post';
 import { PostStatus } from '../../types';
-import { Api } from '../../utils';
+import { Api } from '../../utils/api';
 import Header2 from '../headers/Header2';
 
 type Props = {
@@ -40,7 +40,7 @@ function NewPostLayout({ children }: Props) {
     const toastId = toast.loading('Loading...');
 
     try {
-      const { data: post } = await Api.post(`/${username}/drafts`, {
+      const { data: post } = await Api.post(`/api/${username}/drafts`, {
         ...newPostData,
         username,
         status: 'draft',
@@ -65,7 +65,7 @@ function NewPostLayout({ children }: Props) {
     const toastId = toast.loading('Loading...');
 
     try {
-      const { data: post } = await Api.put(`/${username}/${uuid}`, {
+      const { data: post } = await Api.put(`/api/${username}/${uuid}`, {
         ...newPostData,
         status: 'draft',
       });
@@ -88,7 +88,7 @@ function NewPostLayout({ children }: Props) {
     const toastId = toast.loading('Loading...');
 
     try {
-      const { data: post } = await Api.put(`/${username}/posts`, {
+      const { data: post } = await Api.put(`/api/${username}/posts`, {
         ...newPostData,
         username,
         status: 'published',
@@ -123,7 +123,7 @@ function NewPostLayout({ children }: Props) {
     const text = isPublishedDraft ? 'Draft' : 'Post';
 
     try {
-      const { data: post } = await Api.put(`/${username}/${uuid}`, {
+      const { data: post } = await Api.put(`/api/${username}/${uuid}`, {
         ...newPostData,
         status: 'published',
       });
