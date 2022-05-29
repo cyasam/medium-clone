@@ -37,18 +37,20 @@ function TrendGrid() {
                 </div>
                 <div>
                   {post?.user && (
-                    <div className="flex items-center mb-2 font-medium text-[13px]">
-                      {post?.user?.image && (
-                        <div className="inline-flex mr-2">
-                          <Avatar
-                            src={post?.user?.image}
-                            alt={post?.user?.name}
-                            size="24"
-                          />
-                        </div>
-                      )}
-                      <span>{post?.user?.name}</span>
-                    </div>
+                    <Link href={`/@${post.user.username}`}>
+                      <a className="flex items-center mb-2 font-medium text-[13px]">
+                        {post?.user?.image && (
+                          <div className="inline-flex mr-2">
+                            <Avatar
+                              src={post?.user?.image}
+                              alt={post?.user?.name}
+                              size="24"
+                            />
+                          </div>
+                        )}
+                        <span>{post?.user?.name}</span>
+                      </a>
+                    </Link>
                   )}
                   <h4 className="text-base font-bold">
                     <Link href={`/@${username}/${post.uuid}`}>

@@ -13,7 +13,7 @@ function StoriesHome({ children }: Props) {
   const activeClassname = 'border-b pb-4 -mb-[1px] border-black text-black';
 
   return (
-    <main className="container">
+    <main className="main-container">
       <div className="flex mb-5 border-b border-stone-200 text-stone-500 text-base leading-none">
         <div
           className={classNames('block mr-7', {

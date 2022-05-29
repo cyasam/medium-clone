@@ -4,8 +4,6 @@ import { serializeData } from '../../../../utils/api';
 import { errorHandler } from '../../../../utils/errors';
 import { authMiddleware } from '../../../../utils/middlewares';
 
-const prisma = new PrismaClient();
-
 interface ExtendedNextApiRequest extends NextApiRequest {
   query: { order?: string; author: string };
   body: {
@@ -15,13 +13,43 @@ interface ExtendedNextApiRequest extends NextApiRequest {
   };
 }
 
+const prisma = new PrismaClient();
+
+export const getAllAuthorPosts = async (author: string, order?: string) => {
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        status: 'published',
+        user: {
+          username: author,
+        },
+      },
+      orderBy: {
+        created_at: order === 'desc' ? 'desc' : 'asc',
+      },
+      select: {
+        id: true,
+        title: true,
+        body: true,
+        created_at: true,
+        user: true,
+        uuid: true,
+        status: true,
+      },
+    });
+    prisma.$disconnect();
+
+    return serializeData(posts);
+  } catch (error) {
+    return null;
+  }
+};
+
 export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    await authMiddleware(req);
-
     const {
       query: { order, author },
       body: { title, body, status },
@@ -30,31 +58,13 @@ export default async function handler(
 
     switch (method) {
       case 'GET':
-        const posts = await prisma.post.findMany({
-          where: {
-            status: 'published',
-            user: {
-              username: author,
-            },
-          },
-          orderBy: {
-            created_at: order === 'desc' ? 'desc' : 'asc',
-          },
-          select: {
-            id: true,
-            title: true,
-            body: true,
-            created_at: true,
-            user: true,
-            uuid: true,
-            status: true,
-          },
-        });
-        prisma.$disconnect();
+        const posts = await getAllAuthorPosts(author, order);
 
-        res.status(200).json(serializeData(posts));
+        res.status(200).json(posts);
         break;
       case 'POST':
+        await authMiddleware(req);
+
         if (!author)
           return res.status(401).json({ message: 'author not provided' });
 
