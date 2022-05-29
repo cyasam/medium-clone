@@ -21,7 +21,7 @@ function MediumHome() {
               <PostGridElement
                 key={post.id}
                 post={post}
-                link={`/p/${post.uuid}`}
+                link={`/@${post.user.username}/${post.uuid}`}
               />
             ))}
         </div>

@@ -4,8 +4,8 @@ import { IoTrendingUpSharp } from 'react-icons/io5';
 import useSWR from 'swr';
 import { createPostFetchUrl, fetcher } from '../utils/api';
 import { Post } from '../types';
-import Image from 'next/image';
 import { formatPostDate } from '../utils';
+import Avatar from './Avatar';
 
 function TrendGrid() {
   const postFetchUrl = createPostFetchUrl();
@@ -40,12 +40,10 @@ function TrendGrid() {
                     <div className="flex items-center mb-2 font-medium text-[13px]">
                       {post?.user?.image && (
                         <div className="inline-flex mr-2">
-                          <Image
-                            className="rounded-full"
+                          <Avatar
                             src={post?.user?.image}
-                            width="32"
-                            height="32"
-                            alt={post?.user?.name ?? ''}
+                            alt={post?.user?.name}
+                            size="24"
                           />
                         </div>
                       )}

@@ -12,7 +12,7 @@ export const findH2Text = (json: any) => {
     (block: any) => block.type === 'header' && block.data.level === 2
   );
 
-  return h2.data.text;
+  return h2?.data?.text ?? undefined;
 };
 
 export const formatPostDate = (date?: string | null, options?: Options) => {

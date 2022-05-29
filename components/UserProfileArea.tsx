@@ -12,9 +12,10 @@ function UserProfileArea({ menuClassName }: Props) {
 
   if (status === 'unauthenticated') return null;
 
-  const { email, name } = session?.user ?? {
-    email: null,
-    name: null,
+  const { email, name, image } = session?.user ?? {
+    email: undefined,
+    name: undefined,
+    image: undefined,
   };
 
   return (
@@ -24,7 +25,7 @@ function UserProfileArea({ menuClassName }: Props) {
           className="w-8 h-8 rounded-full overflow-hidden cursor-pointer"
           onClick={() => setOpenMenu(!openMenu)}
         >
-          <Avatar />
+          <Avatar src={image} alt={name} size="32" />
         </div>
 
         {openMenu && (
@@ -35,7 +36,7 @@ function UserProfileArea({ menuClassName }: Props) {
             } flex min-w-[260px] w-[min-content] shadow shadow-stone-200 border border-stone-300 rounded px-6 py-5 bg-white`}
           >
             <div className="mr-4 w-[32px]">
-              <Avatar />
+              <Avatar src={image} alt={name} size="32" />
             </div>
             <div className="flex-shrink">
               <p className="text-sm">{name}</p>

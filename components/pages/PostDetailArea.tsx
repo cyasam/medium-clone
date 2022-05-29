@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import { createPostFetchUrlByID, fetcher } from '../../utils/api';
 import { formatPostDate } from '../../utils';
 import EditorHTMLParser from '../html-elements/EditorHTMLParser';
-import Image from 'next/image';
+import Avatar from '../Avatar';
 
 function PostDetailArea() {
   const {
@@ -21,12 +21,10 @@ function PostDetailArea() {
         <div className="list">
           <div className="flex items-center mb-6">
             <div className="mr-4">
-              <Image
-                className="rounded-full"
-                src={post.user.image}
-                width="48"
-                height="48"
-                alt={post.user.name}
+              <Avatar
+                src={post?.user?.image}
+                alt={post?.user?.name}
+                size="48"
               />
             </div>
             <div className="flex-1">

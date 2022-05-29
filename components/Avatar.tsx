@@ -1,17 +1,22 @@
 import React from 'react';
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
 
-function Avatar() {
-  const { data: session } = useSession();
+type Props = {
+  src: string;
+  alt?: string | null;
+  size?: string | number;
+};
 
-  const name = session?.user?.name;
-  const image = session?.user?.image;
-
+function Avatar({ src, alt, size }: Props) {
   return (
     <div className="inline-flex bg-gray-300 rounded-full overflow-hidden">
-      {image && (
-        <Image src={image} width="32" height="32" alt={name ?? 'user'} />
+      {src && (
+        <Image
+          src={src}
+          width={size ?? '24'}
+          height={size ?? '24'}
+          alt={alt ?? ''}
+        />
       )}
     </div>
   );
