@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
-import { ClockLoader } from 'react-spinners';
-
+import PageLoader from '../PageLoader';
 import MediumHeader from '../headers/MediumHeader';
 
 type Props = {
@@ -11,13 +10,7 @@ type Props = {
 function Layout({ children }: Props) {
   const { status } = useSession();
 
-  if (status === 'loading')
-    return (
-      <div className="w-screen h-screen flex justify-center items-center flex-col">
-        <ClockLoader loading={true} size="250px" />
-        <p className="mt-5 text-2xl">Please Wait...</p>
-      </div>
-    );
+  if (status === 'loading') return <PageLoader />;
 
   return (
     <div className="wrapper">

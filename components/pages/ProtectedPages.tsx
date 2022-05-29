@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { ReactElement, ReactNode, useEffect } from 'react';
+import PageLoader from '../PageLoader';
 
 type Props = {
   redirect?: boolean;
@@ -18,7 +19,7 @@ function ProtectedPages({ children, fallback, redirect }: Props) {
     }
   }, [status, router, redirect]);
 
-  if (status === 'loading') return null;
+  if (status === 'loading') return <PageLoader />;
 
   if (status === 'unauthenticated') {
     if (fallback) return fallback;

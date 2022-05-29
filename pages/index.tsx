@@ -11,7 +11,7 @@ import { getAllPosts } from './api/posts';
 
 export async function getServerSideProps(context: any) {
   const postFetchUrl = createPostFetchUrl();
-  const posts = await getAllPosts();
+  const posts = await getAllPosts('desc');
 
   return {
     props: {
