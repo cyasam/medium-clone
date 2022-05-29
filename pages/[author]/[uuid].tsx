@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SWRConfig } from 'swr';
 import { createPostFetchUrlByID } from '../../utils/api';
 import { getPostByID } from '../api/posts/[uuid]';
@@ -7,11 +7,21 @@ import PostDetailArea from '../../components/pages/PostDetailArea';
 import Head from 'next/head';
 import { Post } from '../../types';
 import { formatPostDate } from '../../utils';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps(context: any) {
   const { uuid } = context.params;
   const postFetchUrl = createPostFetchUrlByID(uuid);
   const post = await getPostByID(uuid);
+
+  if (!post) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: '/not-found',
+      },
+    };
+  }
 
   return {
     props: {
@@ -30,6 +40,14 @@ type Props = {
 };
 
 function PostDetailPage({ post, fallback }: Props) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!post) router.push('/not-found');
+  }, [router, post]);
+
+  if (!post) return null;
+
   const date = post.created_at && formatPostDate(post.created_at);
 
   return (

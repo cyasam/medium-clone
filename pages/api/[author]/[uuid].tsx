@@ -7,7 +7,7 @@ import { authMiddleware } from '../../../utils/middlewares';
 const prisma = new PrismaClient();
 
 interface ExtendedNextApiRequest extends NextApiRequest {
-  query: { uuid: string };
+  query: { uuid: string; author: string };
   body: {
     title: string;
     title_changes?: string;
@@ -25,16 +25,19 @@ export default async function handler(
     await authMiddleware(req);
 
     const {
-      query: { uuid },
+      query: { uuid, author },
       body: { title, body, body_changes, title_changes, status },
       method,
     } = req;
 
     switch (method) {
       case 'GET':
-        const post = await prisma.post.findUnique({
+        const post = await prisma.post.findFirst({
           where: {
             uuid,
+            user: {
+              username: author,
+            },
           },
           select: {
             id: true,

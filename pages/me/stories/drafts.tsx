@@ -5,7 +5,7 @@ import DraftsHome from '../../../components/pages/stories/DraftsHome';
 
 function Drafts() {
   return (
-    <ProtectedPages>
+    <ProtectedPages redirect={true}>
       <StoriesHome>
         <DraftsHome />
       </StoriesHome>

@@ -33,8 +33,7 @@ function PostDetailArea() {
               <div className="text-base">{post.user.name}</div>
 
               <div className="mt-1 text-stone-500 text-sm">
-                {formatPostDate(post.created_at, { day: true, month: true })} ·
-                5 min read
+                {formatPostDate(post.created_at, { day: true, month: true })}
               </div>
             </div>
           </div>

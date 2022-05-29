@@ -1,13 +1,12 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { getSession, useSession } from 'next-auth/react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 import { Api, createAuthorPostFetchUrlByID } from '../../../utils/api';
 import { Post, PostStatus } from '../../../types';
 
 import MediumEditor from '../../../components/editor/MediumEditor';
-import ProtectedPages from '../../../components/pages/ProtectedPages';
 import NewPostLayout from '../../../components/layouts/NewPostLayout';
 
 export async function getServerSideProps(context: any) {
@@ -19,9 +18,7 @@ export async function getServerSideProps(context: any) {
 }
 
 function EditPost() {
-  const {
-    query: { uuid },
-  } = useRouter();
+  const router = useRouter();
 
   const { data: session } = useSession();
   const username = session?.user?.username;
@@ -30,9 +27,13 @@ function EditPost() {
   const [postStatus, setPostStatus] = useState<PostStatus>('draft');
 
   useEffect(() => {
+    const { uuid } = router.query;
+
     const init = async () => {
       const postFetchUrl = createAuthorPostFetchUrlByID(uuid, username);
       const { data: post }: { data: Post } = await Api.get(postFetchUrl);
+
+      if (!post) router.push('/not-found');
 
       const {
         body,
@@ -58,15 +59,17 @@ function EditPost() {
     };
 
     uuid && username && init();
-  }, [username, uuid]);
+  }, [username, router]);
 
   return (
-    <ProtectedPages>
+    <>
       <Head>
         <title>Edit Post</title>
       </Head>
-      {blocks && <MediumEditor blocks={blocks} postStatus={postStatus} />}
-    </ProtectedPages>
+      <div className="container">
+        {blocks && <MediumEditor blocks={blocks} postStatus={postStatus} />}
+      </div>
+    </>
   );
 }
 

@@ -6,6 +6,7 @@ import NewPost from '../../pages/new-post';
 import { PostStatus } from '../../types';
 import { Api } from '../../utils/api';
 import Header2 from '../headers/Header2';
+import ProtectedPages from '../pages/ProtectedPages';
 
 type Props = {
   children: ReactNode;
@@ -176,11 +177,13 @@ function NewPostLayout({ children }: Props) {
   };
 
   return (
-    <NewPostContext.Provider value={{ onChanged }}>
-      <Header2 changed={changed} publishClick={publishClick} />
-      <div className="container max-w-[740px]">{children}</div>
-      <Toaster />
-    </NewPostContext.Provider>
+    <ProtectedPages redirect={true}>
+      <NewPostContext.Provider value={{ onChanged }}>
+        <Header2 changed={changed} publishClick={publishClick} />
+        <div className="container">{children}</div>
+        <Toaster />
+      </NewPostContext.Provider>
+    </ProtectedPages>
   );
 }
 

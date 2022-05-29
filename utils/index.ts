@@ -4,7 +4,18 @@ type Options = {
   day?: boolean;
 };
 
-export const formatPostDate = (date?: string, options?: Options) => {
+export const findH2Text = (json: any) => {
+  const cleanData = JSON.parse(json);
+  const { blocks } = cleanData;
+
+  const h2 = blocks.find(
+    (block: any) => block.type === 'header' && block.data.level === 2
+  );
+
+  return h2.data.text;
+};
+
+export const formatPostDate = (date?: string | null, options?: Options) => {
   let dateOptions: Intl.DateTimeFormatOptions | undefined = {
     year: 'numeric',
     month: 'short',

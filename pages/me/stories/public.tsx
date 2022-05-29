@@ -5,7 +5,7 @@ import StoriesHome from '../../../components/pages/stories/StoriesHome';
 
 function Public() {
   return (
-    <ProtectedPages>
+    <ProtectedPages redirect={true}>
       <StoriesHome>
         <PublishedHome />
       </StoriesHome>

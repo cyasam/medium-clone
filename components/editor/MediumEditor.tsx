@@ -1,7 +1,8 @@
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { NewPostContext } from '../layouts/NewPostLayout';
 import EditorJS from '@editorjs/editorjs';
 import { PostStatus } from '../../types';
+import { useDebounce } from 'usehooks-ts';
 
 type Props = {
   blocks?: EditorJS.OutputData;
@@ -13,6 +14,31 @@ const EDITOR_HOLDER_ID = 'editorjs';
 const MediumEditor = ({ blocks, postStatus }: Props) => {
   const editorInsRef = useRef<EditorJS | null>();
   const { onChanged } = useContext(NewPostContext);
+
+  const [edit, setEdit] = useState(false);
+  const debouncedEdit = useDebounce<boolean>(edit, 1000);
+
+  useEffect(() => {
+    if (edit && debouncedEdit) {
+      const change = async () => {
+        const outputData = await editorInsRef?.current?.saver.save();
+
+        const title = outputData?.blocks.find(
+          (block) => block.type === 'header' && block.data.level === 1
+        );
+
+        const data = {
+          title: title?.data?.text,
+          body: JSON.stringify(outputData),
+        };
+
+        onChanged(data, postStatus);
+      };
+
+      change();
+      setEdit(false);
+    }
+  }, [onChanged, edit, debouncedEdit, postStatus]);
 
   // Init
 
@@ -29,22 +55,11 @@ const MediumEditor = ({ blocks, postStatus }: Props) => {
       onReady() {
         editorInsRef.current = editor;
       },
-      async onChange(api) {
-        const outputData = await api.saver.save();
-
-        const title = outputData.blocks.find(
-          (block) => block.type === 'header' && block.data.level === 1
-        );
-
-        const data = {
-          title: title?.data?.text,
-          body: JSON.stringify(outputData),
-        };
-
-        onChanged(data, postStatus);
+      async onChange() {
+        setEdit(true);
       },
     });
-  }, [blocks, onChanged, postStatus]);
+  }, [blocks]);
 
   useEffect(() => {
     !editorInsRef.current && initEditor();
@@ -53,7 +68,7 @@ const MediumEditor = ({ blocks, postStatus }: Props) => {
   return (
     <div className="medium-editor mt-10">
       <div className="p-4">
-        <div id={EDITOR_HOLDER_ID} />
+        <div className="text-lg" id={EDITOR_HOLDER_ID} />
       </div>
     </div>
   );

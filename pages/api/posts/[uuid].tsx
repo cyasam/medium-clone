@@ -4,23 +4,27 @@ import { serializeData } from '../../../utils/api';
 import { errorHandler } from '../../../utils/errors';
 
 export const getPostByID = async (uuid: string) => {
-  const prisma = new PrismaClient();
-  const post = await prisma.post.findUnique({
-    where: {
-      uuid,
-    },
-    select: {
-      id: true,
-      title: true,
-      body: true,
-      created_at: true,
-      user: true,
-      uuid: true,
-    },
-  });
-  prisma.$disconnect();
+  try {
+    const prisma = new PrismaClient();
+    const post = await prisma.post.findUnique({
+      where: {
+        uuid,
+      },
+      select: {
+        id: true,
+        title: true,
+        body: true,
+        created_at: true,
+        user: true,
+        uuid: true,
+      },
+    });
+    prisma.$disconnect();
 
-  return serializeData(post);
+    return serializeData(post);
+  } catch (error) {
+    return null;
+  }
 };
 
 interface ExtendedNextApiRequest extends NextApiRequest {

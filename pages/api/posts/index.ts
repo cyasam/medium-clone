@@ -4,32 +4,36 @@ import { errorHandler } from './../../../utils/errors';
 import { serializeData } from '../../../utils/api';
 
 export const getAllPosts = async (order?: string, excludeUser?: string) => {
-  const prisma = new PrismaClient();
-  const posts = await prisma.post.findMany({
-    where: {
-      status: 'published',
-      NOT: {
-        user: {
-          username: excludeUser,
+  try {
+    const prisma = new PrismaClient();
+    const posts = await prisma.post.findMany({
+      where: {
+        status: 'published',
+        NOT: {
+          user: {
+            username: excludeUser,
+          },
         },
       },
-    },
-    orderBy: {
-      created_at: order === 'desc' ? 'desc' : 'asc',
-    },
-    select: {
-      id: true,
-      title: true,
-      body: true,
-      created_at: true,
-      user: true,
-      uuid: true,
-      status: true,
-    },
-  });
-  prisma.$disconnect();
+      orderBy: {
+        created_at: order === 'desc' ? 'desc' : 'asc',
+      },
+      select: {
+        id: true,
+        title: true,
+        body: true,
+        created_at: true,
+        user: true,
+        uuid: true,
+        status: true,
+      },
+    });
+    prisma.$disconnect();
 
-  return serializeData(posts);
+    return serializeData(posts);
+  } catch (error) {
+    return null;
+  }
 };
 
 interface ExtendedNextApiRequest extends NextApiRequest {

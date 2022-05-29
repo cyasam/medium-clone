@@ -4,6 +4,8 @@ import { IoTrendingUpSharp } from 'react-icons/io5';
 import useSWR from 'swr';
 import { createPostFetchUrl, fetcher } from '../utils/api';
 import { Post } from '../types';
+import Image from 'next/image';
+import { formatPostDate } from '../utils';
 
 function TrendGrid() {
   const postFetchUrl = createPostFetchUrl();
@@ -18,11 +20,15 @@ function TrendGrid() {
           </span>
           TRENDING ON MEDIUM
         </p>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {!posts && <p>Loading...</p>}
           {posts?.map((post: Post, index: number) => {
             const postNumber = index < 10 ? `0${index + 1}` : index + 1;
             const { username } = post.user;
+            const postDate = formatPostDate(post?.created_at, {
+              day: true,
+              month: true,
+            });
 
             return (
               <div key={post.id} className="flex">
@@ -30,17 +36,28 @@ function TrendGrid() {
                   <p className="-mt-1">{postNumber}</p>
                 </div>
                 <div>
-                  <div className="mb-2 font-medium text-[13px]">
-                    {post?.user?.name}
-                  </div>
+                  {post?.user && (
+                    <div className="flex items-center mb-2 font-medium text-[13px]">
+                      {post?.user?.image && (
+                        <div className="inline-flex mr-2">
+                          <Image
+                            className="rounded-full"
+                            src={post?.user?.image}
+                            width="32"
+                            height="32"
+                            alt={post?.user?.name ?? ''}
+                          />
+                        </div>
+                      )}
+                      <span>{post?.user?.name}</span>
+                    </div>
+                  )}
                   <h4 className="text-base font-bold">
                     <Link href={`/@${username}/${post.uuid}`}>
                       <a>{post.title}</a>
                     </Link>
                   </h4>
-                  <p className="mt-2 text-stone-500 text-sm">
-                    May 11 · 7 min read
-                  </p>
+                  <p className="mt-2 text-stone-500 text-sm">{postDate}</p>
                 </div>
               </div>
             );
