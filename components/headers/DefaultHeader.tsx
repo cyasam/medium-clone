@@ -14,12 +14,7 @@ function DefaultHeader() {
           <div className="flex-shrink-0 w-[162px] h-[25px]">
             <Link href="/">
               <a className="relative block h-full">
-                <Image
-                  src={Logo}
-                  layout="fill"
-                  objectFit="contain"
-                  alt="Medium Clone"
-                />
+                <Image src={Logo} width="162" height="25" alt="Medium Clone" />
               </a>
             </Link>
           </div>
